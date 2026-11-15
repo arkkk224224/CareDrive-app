@@ -31,14 +31,17 @@
 ## APK와 실행 방법
 
 - **APK 위치:** [`apk/`](apk) (`아크크_케어드라이브_release.apk`, release 서명)
-- 설치: `adb install -r apk/<파일명>.apk` 후 앱 목록의 "케어드라이브"를 실행한다.
-- 화면은 **차량 화면 시연 콘솔**이다.
+- 설치: `adb install -r apk/<파일명>.apk`. 앱 목록에 아이콘이 둘 생긴다.
+  - **케어드라이브**: 차량 앱 본체. 차량 화면(V-000 ~ V-021, 와이어프레임 「04최종 와프」 그대로)을 띄운다. **인터넷이 필요하다**(서버 `https://caredrive-beta.vercel.app`). 가로 화면 에뮬레이터에서 실행한다.
+  - **케어드라이브 알고리즘 콘솔**: 판정 로직 시연용(아래 설명).
+- **심사 순서**: 차량 앱을 열면 연결 코드 6자리가 뜬다 → 휴대폰 브라우저에서 `https://caredrive-beta.vercel.app`(자녀 앱)을 열어 `010-9876-5432` / 인증번호 `123456`으로 로그인하고 그 코드를 입력 → 차량에서 "동의하고 연결하기". 오른쪽 아래 **시연** 패널로 변속(P·D), 길 이탈, 시동 끄기, 다음 날, 평소 4주·감소 12주를 넣어 급성·만성 알림을 만든다. 가상 계정과 시연 순서는 [web/README.md](web/README.md).
+- **알고리즘 콘솔**은 아래와 같다.
   - 위쪽 "급성": "① 길을 벗어나 맴돈다"를 누르면 합성 궤적(지난 28일 평소 경로 + 오늘 궤적)을 **실제 이탈 감지기**에 넣어 판정한다. "② 차를 세운다(P단)" → 음성 질문에 응답(수락 / 거절 / 목적지 발화 / 무응답). "다음 날 · 새 트립"으로 날을 넘겨 후보가 쌓이면 자녀 알림 미리보기가 뜬다. "평소 길 (비교)"는 같은 감지기가 평소 길을 후보로 잡지 않는 것을 보여준다.
   - 아래 "만성": 시나리오(정상 / 완만한 감소 / 급감 / 횟수만 감소)를 고르면 365일 합성 주행 데이터에 판정 로직이 돌고, 기준선 대비 지표 3개와 알림이 울린 날이 차트에 그려진다. 자녀 알림 문구는 문구 생성기가 줄어든 지표와 비율로 만든다.
 
 ### 시연 콘솔의 범위 (중요)
 
-센서·내비 입력은 **시뮬레이션**이다. 판정 로직(`app/src/main/java/com/caredrive/app/core/`)은 실제 앱 코드 그대로 동작하지만, Pleos Connect SDK(Vehicle, FusedLocation, NaviHelper, TextToSpeech, SpeechToText)는 SDK 사용 승인 후 시뮬레이션 입력을 실제 값으로 교체한다. **이 APK에는 아직 Pleos SDK 연동이 없다.** 원시 신호 → 트립 → 하루 요약 → 판정 파이프라인은 구현돼 있어 SDK 값만 `ChronicPipeline.onSample()`에 넣으면 된다.
+센서·내비 입력은 **시뮬레이션**이다. 판정 로직(`app/src/main/java/com/caredrive/app/core/`)은 실제 앱 코드 그대로 동작하지만, Pleos Connect SDK(Vehicle, FusedLocation, NaviHelper, TextToSpeech, SpeechToText)는 SDK 사용 승인 후 시뮬레이션 입력을 실제 값으로 교체한다. **이 APK에는 아직 Pleos SDK 연동이 없다**(차량 앱 본체의 음성은 Android TTS·STT, 집 안내는 표준 내비 인텐트로 대신한다). 원시 신호 → 트립 → 하루 요약 → 판정 파이프라인은 구현돼 있어 SDK 값만 `ChronicPipeline.onSample()`에 넣으면 된다.
 
 ## 알고리즘 구성 (`app/src/main/java/com/caredrive/app/core/`)
 
@@ -61,8 +64,10 @@
 | --- | --- |
 | 목표 플랫폼 | Pleos Connect Emulator **2.1.0** (Android Automotive, API 34), minSdk 28, targetSdk 34 |
 | 개발 도구 | Android Studio, AGP 9.5.1, Gradle 9.6.0, Kotlin, JDK 17 |
-| **실제 구동 확인** | Android Emulator `Medium Desktop` (Android 14, API 34, **3840×2160** 가로 화면), 전체 화면 모드. APK 설치·실행, 급성 흐름(이탈 감지→정차→응답→2일 누적 알림), 만성 시나리오까지 확인 |
-| **아직 확인하지 못한 것** | Pleos Connect Emulator 2.1.0 이미지에서의 구동과 그 화면 규격. 이미지 설치 후 확인해 이 표를 갱신한다 |
+| **실제 구동 확인** | Android Emulator `Medium Desktop` (Android 14, API 34, **3840×2160** 가로 화면). 차량 앱 본체는 설치·실행, 서버 연결, 연결 코드 발급 화면(V-000)까지 에뮬레이터에서 확인했다. 급성 질문 → 집 안내, 만성 알림 흐름은 웹(시연 패널)과 알고리즘 콘솔에서 확인했다 |
+| **화면 규격** | 차량 화면은 **1280×720(16:9)** 기준으로 설계하고, 창 크기에 비율을 유지한 채 맞춘다(3840×2160에서 확인). Pleos Connect Emulator의 실제 화면 규격은 아직 확인하지 못해 1280×720은 가정이다 |
+| **아직 확인하지 못한 것** | Pleos Connect Emulator 2.1.0 이미지에서의 구동과 그 화면 규격, 에뮬레이터에서의 실제 음성 인식(마이크). 이미지 설치 후 확인해 이 표를 갱신한다 |
+| 서버 | 자체 서버 소스는 [`web/`](web)에 있다(Next.js + Postgres). 비밀값(DB 접속 정보 등)은 저장소에 없고 배포 환경변수로만 둔다 |
 
 ## 빌드와 테스트
 
