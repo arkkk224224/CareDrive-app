@@ -198,7 +198,7 @@ export default function VehicleApp() {
         }}
         onTrip={night => act('vehicle/trip', { radius: +(4.5 + Math.random() * 3).toFixed(1), night }).then(() => setToast('시동을 껐어요. 오늘 운전 1번을 기록했어요'))}
         onVoicePause={() => act('vehicle/pause', { paused: true }).then(() => { speak('공유를 멈췄어요'); setToast('"공유 멈춰줘" → 공유를 멈췄어요') })}
-        onDemo={(path, body) => api('vehicle', path, body).then(r => { if (path === 'demo/reset') return location.reload(); refresh(); setRouting(false); setDev(null); setToast(r.today ? `오늘은 ${r.today}이에요` : '가상 계정과 목업 데이터를 처음 상태로 되돌렸어요') })}
+        onDemo={(path, body) => api('vehicle', path, body).then(r => { if (path === 'demo/reset') return location.reload(); refresh(); setRouting(false); setDev(null); setToast(r.today ? `오늘은 ${r.today}이에요` : '가상 계정과 목업 데이터를 처음 상태로 되돌렸어요') }).catch(e => setToast(e.message))}
         onVin={v => { localStorage.setItem('cd_vin', v); location.href = '/v?vin=' + v }} />
     </div>
   )

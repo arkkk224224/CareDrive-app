@@ -6,6 +6,7 @@ import { seed } from '@/lib/seed'
 // shortcut: 문자 발송 업체가 없어 인증번호는 고정값이다, 실제 출시 때 SMS 인증으로 교체.
 const DEMO_OTP = '123456'
 const CODE_MIN = 10, REQUEST_MIN = 5
+const RESET_GAP_MS = 30_000
 
 class Bad extends Error { constructor(msg: string, public status = 400) { super(msg) } }
 const need = (ok: unknown, msg: string, status = 400) => { if (!ok) throw new Bad(msg, status) }
@@ -72,10 +73,18 @@ async function handle(req: Request, path: string) {
     const [v] = await sql`insert into vehicles(vin, model) values (${b.vin}, ${String(b.model || '내 차').slice(0, 20)}) on conflict (vin) do update set vin = excluded.vin returning id`
     return login('vehicle_id', v.id)
   }
-  // 가상 계정과 목업 데이터를 처음 상태로 되돌린다(가상 계정만 지운다).
-  if (path === 'demo/reset') return seed()
-
   const s = await session(req)
+
+  // 가상 계정과 목업 데이터를 처음 상태로 되돌린다(가상 계정만 지운다).
+  // 링크 미리보기·크롤러의 GET 한 번으로 초기화되지 않게 로그인한 POST만 받고, 연달아 누르지 못하게 간격을 둔다.
+  // shortcut: 심사용 데모라 누구나 로그인할 수 있어 악의적 초기화는 못 막는다, 접속자별 데모 공간을 나눌 때 해결한다.
+  if (path === 'demo/reset') {
+    need(req.method === 'POST', '초기화는 POST로만 할 수 있어요', 405)
+    const [m] = await sql`select value from meta where key = 'reset_at'`
+    need(!m || Date.now() - Number(m.value) > RESET_GAP_MS, '방금 초기화했어요. 30초 뒤에 다시 눌러 주세요', 429)
+    await sql`insert into meta values ('reset_at', ${String(Date.now())}) on conflict (key) do update set value = excluded.value`
+    return seed()
+  }
 
   // ── 자녀 앱 ──
   if (path.startsWith('child/')) {
