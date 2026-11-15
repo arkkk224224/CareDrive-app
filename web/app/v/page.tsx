@@ -17,7 +17,7 @@ function speak(text: string) {
   speechSynthesis.cancel()
   speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(text), { lang: 'ko-KR' }))
 }
-/** 음성 인식을 시작하고, 멈추는 함수를 돌려준다. 인식기가 없으면 버튼으로만 답한다. */
+/** 기기 안 인식기(APK 브리지)로 듣고, 멈추는 함수를 돌려준다. 인식기가 없으면 버튼으로만 답한다. */
 function listen(onText: (t: string) => void) {
   const n = native()
   if (n?.listen) {
@@ -25,13 +25,7 @@ function listen(onText: (t: string) => void) {
     n.listen()
     return () => n.stopListening?.()
   }
-  const SR = (window as unknown as { webkitSpeechRecognition?: new () => { lang: string; onresult: (e: { results: { 0: { transcript: string } }[] }) => void; start: () => void; abort: () => void } }).webkitSpeechRecognition
-  if (!SR) return () => {}
-  const r = new SR()
-  r.lang = 'ko-KR'
-  r.onresult = e => onText(e.results[0][0].transcript)
-  try { r.start() } catch { /* 마이크 권한이 없으면 버튼으로 답한다 */ }
-  return () => r.abort()
+  return () => {} // 브라우저 음성 인식은 외부 서버로 음성을 보내므로 쓰지 않는다. 화면 버튼으로 답한다.
 }
 
 const register = (vin: string) => api('vehicle', 'vehicle/register', { vin }).then(r => localStorage.setItem('cd_vehicle', r.token))

@@ -41,7 +41,7 @@
 
 ### 시연 콘솔의 범위 (중요)
 
-센서·내비 입력은 **시뮬레이션**이다. 판정 로직(`app/src/main/java/com/caredrive/app/core/`)은 실제 앱 코드 그대로 동작하지만, Pleos Connect SDK(Vehicle, FusedLocation, NaviHelper, TextToSpeech, SpeechToText)는 SDK 사용 승인 후 시뮬레이션 입력을 실제 값으로 교체한다. **이 APK에는 아직 Pleos SDK 연동이 없다**(차량 앱 본체의 음성은 Android TTS·STT, 집 안내는 표준 내비 인텐트로 대신한다). 원시 신호 → 트립 → 하루 요약 → 판정 파이프라인은 구현돼 있어 SDK 값만 `ChronicPipeline.onSample()`에 넣으면 된다.
+센서·내비 입력은 **시뮬레이션**이다. 판정 로직(`app/src/main/java/com/caredrive/app/core/`)은 실제 앱 코드 그대로 동작하지만, Pleos Connect SDK(Vehicle, FusedLocation, NaviHelper, TextToSpeech, SpeechToText)는 공개된 개발 문서 범위에서 Pleos Connect 에뮬레이터에 연동해 시뮬레이션 입력을 실제 값으로 교체할 계획이다. **이 APK에는 아직 Pleos SDK 연동이 없다**(차량 앱 본체의 음성 출력은 Android TTS, 집 안내는 표준 내비 인텐트로 대신한다. **음성 인식은 기기 안에서만 도는 인식기만 쓰며 음성을 외부 인식 서비스로 보내지 않는다.** 그런 인식기가 없는 환경에서는 화면 버튼으로 답한다). 원시 신호 → 트립 → 하루 요약 → 판정 파이프라인은 구현돼 있어 SDK 값만 `ChronicPipeline.onSample()`에 넣으면 된다.
 
 ## 알고리즘 구성 (`app/src/main/java/com/caredrive/app/core/`)
 
@@ -66,7 +66,7 @@
 | 개발 도구 | Android Studio, AGP 9.5.1, Gradle 9.6.0, Kotlin, JDK 17 |
 | **실제 구동 확인** | Android Emulator `Medium Desktop` (Android 14, API 34, **3840×2160** 가로 화면). 차량 앱 본체는 설치·실행, 서버 연결, 연결 코드 발급 화면(V-000)까지 에뮬레이터에서 확인했다. 급성 질문 → 집 안내, 만성 알림 흐름은 웹(시연 패널)과 알고리즘 콘솔에서 확인했다 |
 | **화면 규격** | 차량 화면은 **1280×720(16:9)** 기준으로 설계하고, 창 크기에 비율을 유지한 채 맞춘다(3840×2160에서 확인). Pleos Connect Emulator의 실제 화면 규격은 아직 확인하지 못해 1280×720은 가정이다 |
-| **아직 확인하지 못한 것** | Pleos Connect Emulator 2.1.0 이미지에서의 구동과 그 화면 규격, 에뮬레이터에서의 실제 음성 인식(마이크). 이미지 설치 후 확인해 이 표를 갱신한다 |
+| **아직 확인하지 못한 것** | Pleos Connect Emulator 2.1.0 이미지에서의 구동과 그 화면 규격, 에뮬레이터에서의 실제 음성 인식(마이크, 기기 안 인식기가 있는 환경). 이미지 설치 후 확인해 이 표를 갱신한다 |
 | 서버 | 자체 서버 소스는 [`web/`](web)에 있다(Next.js + Postgres). 비밀값(DB 접속 정보 등)은 저장소에 없고 배포 환경변수로만 둔다 |
 
 ## 빌드와 테스트

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -62,8 +63,10 @@ class VehicleActivity : AppCompatActivity() {
 
         @JavascriptInterface
         fun listen() = runOnUiThread {
-            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || !SpeechRecognizer.isRecognitionAvailable(this@VehicleActivity)) return@runOnUiThread
-            stt = (stt ?: SpeechRecognizer.createSpeechRecognizer(this@VehicleActivity)).apply {
+            // 음성을 외부 인식 서비스로 보내지 않는다: 기기 안에서만 도는 인식기가 있을 때만 듣고, 없으면 화면 버튼으로 답한다.
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                Build.VERSION.SDK_INT < 33 || !SpeechRecognizer.isOnDeviceRecognitionAvailable(this@VehicleActivity)) return@runOnUiThread
+            stt = (stt ?: SpeechRecognizer.createOnDeviceSpeechRecognizer(this@VehicleActivity)).apply {
                 setRecognitionListener(object : RecognitionListener {
                     override fun onResults(b: Bundle) { b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()?.let(::deliver) }
                     override fun onError(error: Int) {} // 못 알아들으면 웹의 15초 타임아웃이 무응답으로 처리한다
@@ -78,7 +81,6 @@ class VehicleActivity : AppCompatActivity() {
                 startListening(Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                     putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                     putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")
-                    putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true) // 부모 음성이 서버로 나가지 않게
                 })
             }
         }
