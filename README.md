@@ -1,5 +1,7 @@
 # 케어드라이브 (CareDrive)
 
+[![CI](https://github.com/arkkk224224/CareDrive-app/actions/workflows/ci.yml/badge.svg)](https://github.com/arkkk224224/CareDrive-app/actions/workflows/ci.yml)
+
 > 부모님의 운전을 감시하지 않고, 정기 검사 사이에 크게 달라진 운전 패턴을 가족이 놓치지 않게 해 검진으로 이어지게 돕는 차량용 가족 안심 앱.
 > 부모 차량 앱은 유료(월 3,900원, Pleos App Market), 자녀 모바일 앱은 무료다. 부모는 차량에서 한 번 수락한다. 현대자동차그룹 차량용 앱 개발 공모전 출품작.
 
@@ -151,3 +153,9 @@ reference/  만성 판정 규칙의 Python 기준 구현과 규칙 결정 실험
 - 급성 시뮬레이션은 격자형 도로와 단순한 궤적이다. 실제 도로망·GPS 끊김·지하 주차장은 반영하지 않았다.
 - 임계값은 시작값이고, 정할 때 쓴 노이즈는 가정이다.
 - 위치 데이터 서비스는 관련 법령(위치정보법, 개인정보보호법의 민감정보) 적용 여부를 확인해야 한다.
+
+## 라이선스와 CI
+
+- 라이선스: [LICENSE](LICENSE) — 권리는 출품 팀에 있고, 심사·열람·개인 실행은 허용한다(공모전 약관 제7조). 상업적 이용·재배포·2차적 저작물은 서면 허락이 필요하다.
+- 오픈소스 출처: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+- CI: [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — `main`에 올라올 때마다 웹 테스트·빌드와 Android 단위 테스트(39개)를 돌린다.

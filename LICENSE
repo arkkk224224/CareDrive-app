@@ -1,0 +1,40 @@
+CareDrive 평가·열람용 라이선스 (Source-available, All rights reserved)
+
+Copyright (c) 2026 CareDrive 팀(아크크). All rights reserved.
+
+이 저장소의 소스 코드, 문서, 화면 디자인, 로고, APK(이하 "이 저작물")는
+현대자동차그룹 차량용 앱 개발 공모전 출품작이며, 이 저작물에 대한 권리는
+출품 팀에게 있습니다. (공모전 약관 제7조 제1항)
+
+허용되는 것
+  1. 공모전 운영사무국과 심사위원이 심사와 운영 목적으로 이 저작물을 열람하고,
+     내려받고, 빌드하고, 실행하는 것.
+  2. 누구나 학습과 평가 목적으로 소스를 읽고, 개인 기기에서 내려받아 실행해 보는 것.
+
+서면 허락 없이는 허용되지 않는 것
+  1. 상업적 이용, 서비스 제공, 판매, 유료 배포.
+  2. 이 저작물의 전부 또는 일부를 복제, 재게시, 배포하는 것.
+  3. 수정하거나 이를 바탕으로 한 2차적 저작물을 만들어 배포하는 것.
+  4. 이름("CareDrive", "케어드라이브"), 로고, 화면 디자인을 다른 서비스에 쓰는 것.
+
+제3자 구성요소
+  오픈소스 등 제3자 구성요소는 각자의 라이선스를 따르며, 출처와 라이선스는
+  THIRD_PARTY_NOTICES.md에 있습니다. 이 라이선스는 그 구성요소의 권리에 영향을
+  주지 않습니다.
+
+우선 적용
+  공모전 약관과 공지사항이 이 저작물의 이용 범위를 달리 정하는 경우 그에 따릅니다.
+
+보증 없음
+  이 저작물은 "있는 그대로(AS IS)" 제공되며, 명시적이든 묵시적이든 어떠한 보증도
+  하지 않습니다. 이 저작물의 사용으로 생기는 문제에 대해 저작권자는 책임지지 않습니다.
+  이 앱은 의료기기가 아니며 질병을 진단하지 않습니다.
+
+---------------------------------------------------------------------------
+English summary (the Korean text above prevails)
+
+All rights reserved. Evaluation and personal, non-commercial viewing and running
+are permitted (including by the contest organizers for judging). Commercial use,
+copying, redistribution, and derivative works require prior written permission.
+Third-party components keep their own licenses (see THIRD_PARTY_NOTICES.md).
+Provided "AS IS", without warranty of any kind.
