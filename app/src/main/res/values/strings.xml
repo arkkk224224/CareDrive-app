@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">케어드라이브</string>
+    <!-- 차량 화면 주소. 배포 주소가 바뀌면 여기만 고친다. -->
+    <string name="web_url" translatable="false">https://caredrive-beta.vercel.app/v</string>
+</resources>
